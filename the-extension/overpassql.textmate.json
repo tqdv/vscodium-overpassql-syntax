@@ -1,0 +1,766 @@
+{
+  "scopeName": "source.overpassql",
+  "patterns": [{ "include": "#TOP" }],
+  "repository": {
+    "TOP": {
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#start-statement-context" },
+
+        { "include": "#query-statement" },
+        { "include": "#out-statement" },
+        { "include": "#item-statement" },
+        { "include": "#settings-declaration" },
+        { "include": "#operator-statement" },
+        { "include": "#generic-statement" },
+
+        { "include": "#fallback" }
+      ]
+    },
+    "fallback": {
+      "comment": "Fallback rule when we don't know what the current context is",
+      "name": "meta.overpassql.unknown",
+      "begin": "(?=.)",
+      "end": "(;)|\\{|\\}",
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#number-literal" },
+        { "include": "#string-literal" },
+        
+        { "include": "#query-type" },
+        { "include": "#assign-variable" },
+        { "include": "#input-set" }
+      ]
+    },
+    "start-statement-context": {
+      "comment": "Starts a statement context",
+      "name": "meta.context.overpassql.statement",
+      "begin": "(?=.)",
+      "end": "(?<=;)",
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#setting-bracketcolon-bracket" },
+        { "include": "#out-statement-keyword" },
+        { "include": "#query-statement-query-type" },
+        { "include": "#item-statement-dot-semicolon" }
+      ]
+    },
+
+    "query-statement-query-type": {
+      "comment": "Matches a query statement { <query-type> ==> ';' }",
+      "begin": "(?=(?:node|way|relation|rel|derived|area|nwr)\\b)",
+      "name": "meta.overpassql.statement.query",
+      "end": ";",
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#query-type" },
+        { "include": "#query-filter" }
+      ]
+    },
+    "out-statement-keyword": {
+      "comment": "Matches an out statement { [<input-set><ws-comment>]? 'out' ==> ';' }",
+      "name": "meta.overpassql.statement.out",
+      "begin": "(?=(?:\\.\\s*+(?:/\\*(?:[^*]|\\*[^/])*+\\*/\\s*+)*+[a-zA-Z][a-zA-Z0-9]*+\\s*+(?:/\\*(?:[^*]|\\*[^/])*+\\*/\\s*+)*+)?+out)",
+      "end": ";",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.terminator.statement.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#input-set" },
+        { "include": "#out-keyword" },
+        { "include": "#out-parameter" }
+      ]
+    },
+    "item-statement-dot-semicolon": {
+      "comment": "Matches an item statement { <input-set> <ws-comment> ';' }",
+      "name": "meta.overpassql.item",
+      "begin": "(?=\\.\\s*+(?:/\\*(?:[^*]|\\*[^/])*+\\*/\\s*+)*+[a-zA-Z][a-zA-Z0-9]*+(?:/\\*(?:[^*]|\\*[^/])*+\\*/\\s*+)*+;)",
+      "end": ";",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.terminator.statement.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+        
+        { "include": "#input-set" }
+      ]
+    },
+
+    "whitespace": {
+      "comment": "Matches whitespace",
+      "match": "[ \\t]++"
+    },
+
+    "bareword": {
+      "comment": "Matches a bareword",
+      "name": "meta.overpassql.bareword",
+      "match": "[a-zA-Z][a-zA-Z0-9]*+"
+    },
+    "skip-term": {
+      "comment": "Matches a term",
+      "name": "meta.overpassql.term",
+      "match": "[a-zA-Z][a-zA-Z0-9]*+"
+    },
+
+    "comments": {
+      "comment": "Matches comments",
+      "patterns": [
+        { "include": "#block-comment" },
+        { "include": "#line-comment" }
+      ]
+    },
+    "block-comment": {
+      "comment": "Matches a block comment",
+      "name": "comment.block.overpassql",
+      "begin": "\\/\\*",
+      "end": "\\*\\/",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.end.overpassql"
+        }
+      }
+    },
+    "line-comment": {
+      "comment": "Matches a line comment",
+      "name": "comment.double-slash.overpassql",
+      "match": "(//).*+$",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.begin.overpassql"
+        }
+      }
+    },
+
+    "number-literal": {
+      "comment": "Matches a number literal\nNB the minus sign is an operator and not part of the literal",
+      "match": "(?<!\\w)(-)?+((?:[1-9][0-9]*+|0)(?:\\.[0-9]++)?+)(?!\\w)",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.arithmetic.overpassql"
+        },
+        "2": {
+          "name": "constant.numeric.overpassql"
+        }
+      }
+    },
+    "positive-integer": {
+      "comment": "Matches a positive integer literal",
+      "match": "(?<!\\w)([1-9][0-9]*+|0)(?!\\w)",
+      "captures": {
+        "0": {
+          "name": "constant.numeric.overpassql"
+        }
+      }
+    },
+
+    "string-literal": {
+      "patterns": [
+        { "include": "#qq-string" },
+        { "include": "#q-string" }
+      ]
+    },
+    "qq-string": {
+      "comment": "Matches a double quoted string",
+      "name": "string.quoted.double.overpassql meta.string.overpassql",
+      "begin": "\"",
+      "end": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#string-escape" }
+      ]
+    },
+    "q-string": {
+      "comment": "Matches a single quoted string",
+      "name": "string.quoted.single.overpassql meta.string.overpassql",
+      "begin": "'",
+      "end": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#string-escape" }
+      ]
+    },
+    "string-escape": {
+      "comment": "Matches a valid backslash-escape sequence within a string",
+      "name": "constant.character.escape.overpassql",
+      "match": "\\\\[nt\"'\\\\]|\\\\u[0-9a-fA-F]{4}"
+    },
+
+    "expression": {
+      "comment": "Matches an expression",
+      "patterns": [
+        { "include": "#pair-expression" },
+        { "include": "#number-literal" },
+        { "include": "#string-literal" },
+        { "include": "#tag-expression" },
+        { "include": "#parens-expression" }
+      ]
+    },
+    "pair-expression": {
+      "comment": "Matches a thing that looks like a pair { <term> '(' ==> ')' }",
+      "name": "meta.overpassql.pair",
+      "begin": "([a-zA-Z][a-zA-Z0-9]*+)(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.other.overpassql"
+        },
+        "2": {
+          "name": "punctuation.section.group.begin.overpassql punctuation.section.parens.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.group.end.overpassql punctuation.section.parens.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+        { "include": "#parameter-separator" },
+        { "include": "#expression" },
+
+        { "include": "#skip-term" }
+      ]
+    },
+    "parens-expression": {
+      "comment": "Matches a parenthesized expression { '(' ==> ')' }",
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.group.begin.overpassql punctuation.section.parens.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.group.end.overpassql punctuation.section.parens.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#expression" },
+        { "include": "#parameter-separator" }
+      ]
+    },
+    "tag-expression": {
+      "comment": "Matches a tag accessor { <( '::' )> <ws-comment> [ <start-of string> | <start-of term> ] ==> <[ , ) ]> }",
+      "name": "meta.overpassql.tag-access",
+      "begin": "(::)(?=\\s*+(?:/\\*(?:[^*]|\\*[^/])*+\\*/\\s*+)*+[\"'a-zA-Z])",
+      "end": "(?=[,)])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.accessor.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+        { "include": "#string-literal" },
+        { "include": "#bareword" }
+      ]
+    },
+
+    "assign-variable": {
+      "comment": "Matches a variable assignment if the arrow and the variable are on the same line, and if it ends with a semicolon or a newline\nNB doesn't handle comments",
+      "name": "meta.overpassql.output-set-maybe",
+      "match": "(->)\\s*+(\\.)\\s*+([_a-zA-Z][_a-zA-Z0-9]*+)(?=\\s*+(?:;|$))",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.assignment.overpassql"
+        },
+        "2": {
+          "name": "punctuation.definition.variable.overpassql"
+        },
+        "3": {
+          "name": "variable.other.overpassql"
+        }
+      }
+    },
+    "assign-variable-invalid": {
+      "comment": "Matches somthing that looks like a variable assignment but which isn't at the right place\nNB doesn't handle comments",
+      "name": "meta.overpassql.assignment.invalid",
+      "match": "(->)\\s*+(\\.)\\s*+([_a-zA-Z][_a-zA-Z0-9]*+)\\s*+"
+    },
+    "input-set": {
+      "comment": "Matches a variable preceded by a dot (on the same line)",
+      "match": "(\\.)\\s*+([_a-zA-Z][_a-zA-Z0-9]*+)",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.overpassql"
+        },
+        "2": {
+          "name": "variable.other.overpassql"
+        }
+      }
+    },
+    
+    "settings-declaration": {
+      "TODO": "Any better way than this?",
+      "comment": "Matches something that starts like a setting declaration",
+      "name": "meta.overpassql.settings-declaration",
+      "begin": "(?=\\[\\s*+\\w++\\s*+:)",
+      "end": ";",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.terminator.statement.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#comments" },
+        { "include": "#setting" }
+      ]
+    },
+
+    "setting-bracketcolon-bracket": {
+      "comment": "Matches a something that looks like a setting: { <( '[' )> <comment-ws> \\w+ <comment-ws> ':' ==> ']' }\nOnly handles inline comments",
+      "name": "meta.overpassql.setting",
+      "begin": "(\\[)(?=\\s*+(?:/\\*(?:[^*]|\\*[^/])*+\\*/\\s*+)*+\\w++\\s*+(?:/\\*(?:[^*]|\\*[^/])*+\\*/\\s*+)*+:)",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.brackets.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.brackets.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#setting-name" },
+        { "include": "#parameter-separator" },
+        { "include": "#setting-param" },
+
+        { "include": "#number-literal" },
+        { "include": "#string-literal" }
+      ]
+    },
+    "setting": {
+      "comment": "Matches anything that starts with a bracket",
+      "name": "meta.overpassql.setting",
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.brackets.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.brackets.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+        
+        { "include": "#setting-1" },
+        { "include": "#setting-2" },
+        { "include": "#setting-name" },
+        { "include": "#parameter-separator" },
+
+        { "include": "#number-literal" },
+        { "include": "#string-literal" }
+      ]
+    },
+    "setting-1": {
+      "comment": "In a setting, matches the setting name first",
+      "begin": "\\b(timeout|maxsize|out|bbox|date|diff|adiff)\\b",
+      "end": "(?=\\])",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.other.setting.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#setting-2" },
+
+        { "include": "#parameter-separator" },
+        { "include": "#number-literal" },
+        { "include": "#string-literal" }
+      ]
+    },
+    "setting-2": {
+      "comment": "In a setting, matches the setting separator first",
+      "begin": ":",
+      "end": "(?=\\])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.separator.delimiter.colon.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#comments" },
+        { "include": "#parameter-separator" },
+        { "include": "#number-literal" },
+        { "include": "#string-literal" }
+      ]
+    },
+    "setting-name": {
+      "comment": "Matches the name of a setting",
+      "name": "keyword.other.setting",
+      "match": "\\b(timeout|maxsize|out|bbox|date|diff|adiff)\\b"
+    },
+    "setting-separator": {
+      "comment": "Matches the colon in a setting option",
+      "name": "punctuation.separator.delimiter.colon.overpassql",
+      "match": ":"
+    },
+    "setting-param": {
+      "patterns": [
+        { "include": "#expression" },
+        { "include": "#parameter-separator" }
+      ]
+    },
+    "parameter-separator": {
+      "comment": "Matches a comma",
+      "name": "punctuation.separator.delimiter.comma.overpassql",
+      "match": ","
+    },
+    
+    "query-statement": {
+      "comment": "Matches something that looks like a query statement",
+      "name": "meta.overpassql.query",
+      "begin": "(?=node|way|relation|rel|derived|area|nwr)\\b",
+      "end": ";",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.terminator.statement.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#query-1" },
+        { "include": "#query-type" },
+
+        { "include": "#query-filter" },
+        { "include": "#assign-variable" },
+        { "include": "#assign-variable-invalid" }
+      ]
+    },
+    "query-1": {
+      "comment": "In a query statement, match the query type first",
+      "begin": "\\b(node|way|relation|rel|derived|area|nwr)\\b",
+      "end": "(?=;)",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.other.query.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+        
+        { "include": "#query-filter" },
+        { "include": "#assign-variable" },
+        { "include": "#assign-variable-invalid" }
+      ]
+    },
+    "query-type": {
+      "comment": "Matches the type of a query",
+      "match": "\\b(node|way|relation|rel|derived|area|nwr)\\b",
+      "name": "keyword.other.query.overpassql"
+    },
+    "query-filter": {
+      "TODO": "Add generic parens filters",
+      "patterns": [
+        { "include": "#query-filter-haskv" },
+        { "include": "#query-filter-intersect" }
+      ]
+    },
+    "query-filter-haskv": {
+      "comment": "Matches a kv filter\nNB We don't validate the syntax",
+      "name": "meta.overpassql.query.filter.kv",
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.brackets.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.brackets.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#query-filter-haskv-operators" },
+        { "include": "#query-filter-haskv-insensitive"},
+        { "include": "#string-literal" },
+
+        { "include": "#bareword" }
+      ]
+    },
+    "query-filter-haskv-operators": {
+      "comment": "Matches an operator used in a kv query filter",
+      "name": "keyword.operator.logical.overpassql",
+      "match": "=|!=|~|!~|!"
+    },
+    "query-filter-haskv-insensitive": {
+      "comment": "Matches the case-insensitive switch if it's on the same line as the closing bracket",
+      "name": "keyword.operator.logical.overpassql",
+      "match": "(,)\\s*+(i)\\s*+(?=\\])",
+      "captures": {
+        "1": {
+          "name": "punctuation.separator.delimiter.comma.overpassql"
+        },
+        "2": {
+          "name": "support.constant.overpassql.i"
+        }
+      }
+    },
+    "query-filter-intersect": {
+      "comment": "Matches a set intersection in a query filter if the dot and the variable are on the same line\nNB doesn't handle comments",
+      "match": "(\\.)\\s*+([_a-zA-Z][_a-zA-Z0-9]*+)",
+      "name": "meta.overpassql.query.filter.intersect",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.arithmetic.overpassql.intersect"
+        },
+        "2": {
+          "name": "variable.other.overpassql"
+        }
+      }
+    },
+
+    "out-statement": {
+      "comment": "Matches an out statement where the (optional) input variable and the out keyword are on the same line.\nNB the parameters are not validated",
+      "name": "meta.overpassql.out",
+      "begin": "((\\.)\\s*+([_a-zA-Z][_a-zA-Z0-9]*+))?+\\s*+(out)",
+      "end": ";",
+      "beginCaptures": {
+        "1": {
+          "name": "meta.overpassql.input-set"
+        },
+        "2": {
+          "name": "punctuation.definition.variable.overpassql"
+        },
+        "3": {
+          "name": "variable.other.overpassql"
+        },
+        "4": {
+          "name": "support.function.overpassql.out"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.terminator.statement.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#out-parameter" }
+      ]
+    },
+    "out-keyword": {
+      "comment": "Matches the out keyword",
+      "name": "keyword.other.overpassql",
+      "match": "out\\b"
+    },
+    "out-parameter": {
+      "LEFTOF": "adding the last 2 rules",
+      "patterns": [
+        { "include": "#out-parameter-keyword" },
+        { "include": "#positive-integer" },
+        { "include": "#parens-expression" }
+      ]
+    },
+    "out-parameter-keyword": {
+      "comment": "Matches a parameter for the out statement",
+      "match": "count|ids|skel|body|tags|meta|noids|geom|center|bb|asc|qt",
+      "captures": {
+        "0": {
+          "name": "support.constant.overpassql.out"
+        }
+      }
+    },
+
+    "operator-statement": {
+      "comment": "Matches an operator where the semicolon is on the same line (and the optional input and output set)",
+      "name": "meta.overpassql.operator",
+      "begin": "(?=(?:\\.[a-zA-Z][a-zA-Z0-9]*+\\s*+)?+(<<|>>|<|>)(?![<>]))",
+      "end": ";",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.terminator.statement.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+        
+        { "include": "#operator-1" },
+        { "include": "#input-set" },
+
+        { "include": "#operator-names" },
+        { "include": "#assign-variable" },
+        { "include": "#assign-variable-invalid" }
+      ]
+    },
+    "operator-1": {
+      "comment": "In an operator, match the input set first",
+      "begin": "((\\.)\\s*+([_a-zA-Z][_a-zA-Z0-9]*+))?+",
+      "end": "(?=;)",
+      "beginCaptures": {
+        "1": {
+          "name": "meta.overpassql.input-set"
+        },
+        "2": {
+          "name": "punctuation.definition.variable.overpassql"
+        },
+        "3": {
+          "name": "variable.other.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#operator-2" },
+        { "include": "#operator-names" },
+        
+        { "include": "#assign-variable" },
+        { "include": "#assign-variable-invalid" }
+      ]
+    },
+    "operator-2": {
+      "comment": "In an operator, match the operator itself first",
+      "begin": "(<<|>>|<|>)(?=[\\s.;])",
+      "end": "(?=;)",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.operator.other.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#assign-variable" },
+        { "include": "#assign-variable-invalid" }
+      ]
+    },
+    "operator-names": {
+      "comment": "Matches operators statement keywords",
+      "name": "keyword.operator.other.overpassql",
+      "match": "<<|>>|<|>"
+    },
+
+    "generic-statement": {
+      "comment": "Matches a generic statement where the function name and the opening parens are on the same line (as well as the optional input set) without validation",
+      "name": "meta.overpassql.statement.generic",
+      "begin": "(?=(?:\\.[a-zA-Z][a-zA-Z0-9]*+\\s*+)?+\\w++\\()",
+      "end": ";",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.terminator.statement.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#generic-1" },
+        { "include": "#input-set" },
+
+        { "include": "#function-call" },
+        { "include": "#assign-variable" },
+        { "include": "#assign-variable-invalid" }
+      ]
+    },
+    "generic-1": {
+      "comment": "In a statement, match the input set first",
+      "begin": "((\\.)\\s*+([_a-zA-Z][_a-zA-Z0-9]*+))?+",
+      "end": "(?=;)",
+      "beginCaptures": {
+        "1": {
+          "name": "meta.overpassql.input-set"
+        },
+        "2": {
+          "name": "punctuation.definition.variable.overpassql"
+        },
+        "3": {
+          "name": "variable.other.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#function-call" },
+        { "include": "#assign-variable" },
+        { "include": "#assign-variable-invalid" }
+      ]
+    },
+    "function-call": {
+      "comment": "Matches a built-in function or something that looks like a function",
+      "name": "meta.function-call.overpassql",
+      "begin": "(?:(is_in|timeline|local|convert|make)|(\\w++))(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "1": {
+          "name": "support.function.overpassql"
+        },
+        "2": {
+          "name": "entity.function.overpassql"
+        }
+      }
+    },
+    "function-names": {
+      "comment": "Matches built-in function names",
+      "name": "support.function.overpassql",
+      "match": "is_in|timeline|local|convert|make"
+    }
+  }
+}

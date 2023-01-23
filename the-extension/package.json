@@ -1,0 +1,28 @@
+{
+  "name": "overpassqlsyntax",
+  "publisher": "whoknowsssss",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.22.0"
+  },
+
+  "displayName": "Overpass QL syntax",
+  "description": "Overpass QL syntax highlighting for vscode-compatible editors",
+
+  "contributes": {
+    "languages": [
+      {
+        "id": "overpassql",
+        "aliases": ["Overpass QL", "overpassQL", "Overpass Query Language"],
+        "extensions": [".overpassql"]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "overpassql",
+        "scopeName": "source.overpassql",
+        "path": "./overpassql.textmate.json"
+      }
+    ]
+  }
+}
