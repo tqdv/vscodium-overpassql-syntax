@@ -9,7 +9,15 @@
   area[name="Bonn"]->.a;
   ( node(area.a)[railway=station];
     way(area.a)[railway=station];
-    rel(area.a)[railway=station];
+   rel(area.a)[railway=station];
   );
   out;
   out count;
+
+// TODO delete when done
+if (triest.count(tirsentr(tiesnt) + ien.val )) {
+  out;
+} else {
+  oientirt();
+  nwr(if r: rsietn ) 
+}
