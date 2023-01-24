@@ -118,3 +118,7 @@ In a .patterns rule list, the first rule that matches is used and the others are
 ### Slang
 
 The top-level list of .patterns is moved in the .repository as the TOP rule.
+
+## Personal notes
+
+I started to work on this before 2023-01-20 14:30.

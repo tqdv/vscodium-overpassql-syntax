@@ -696,7 +696,6 @@
       "name": "keyword.other.query.overpassql"
     },
     "query-filter": {
-      "TODO": "Add generic parens filters",
       "patterns": [
         { "include": "#query-filter-haskv" },
         { "include": "#query-filter-intersect" },
