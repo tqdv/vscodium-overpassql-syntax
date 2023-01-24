@@ -1,13 +1,26 @@
 {
-  "name": "overpassqlsyntax",
+  "name": "overpassql-syntax",
   "publisher": "whoknowsssss",
   "version": "1.0.0",
-  "engines": {
-    "vscode": "^1.22.0"
-  },
 
+  "engines": {
+    "vscodium": "^1.9.0",
+    "vscode": "^1.9.0"
+  },
+  
   "displayName": "Overpass QL syntax",
-  "description": "Overpass QL syntax highlighting for vscode-compatible editors",
+  "description": "Overpass QL syntax highlighting for vscodium-compatible editors",
+  "license": "Artistic-2.0",
+  "categories": ["Programming Languages"],
+
+  "homepage": "https://github.com/tqdv/vscodium-overpassql-syntax",
+  "bugs": {
+    "url": "https://github.com/tqdv/vscodium-overpassql-syntax/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tqdv/vscodium-overpassql-syntax.git"
+  },
 
   "contributes": {
     "languages": [
