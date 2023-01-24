@@ -1,6 +1,6 @@
 {
   "name": "overpassql-syntax",
-  "publisher": "whoknowsssss",
+  "publisher": "tqdv",
   "version": "1.0.0",
 
   "engines": {
@@ -35,7 +35,7 @@
       {
         "language": "overpassql",
         "scopeName": "source.overpassql",
-        "path": "./overpassql.textmate.json"
+        "path": "./overpassql.tmGrammar.json"
       }
     ]
   }
