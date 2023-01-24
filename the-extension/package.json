@@ -12,6 +12,7 @@
   "description": "Overpass QL syntax highlighting for vscodium-compatible editors",
   "license": "Artistic-2.0",
   "categories": ["Programming Languages"],
+  "keywords": ["overpass", "osm", "openstreetmap"],
 
   "homepage": "https://github.com/tqdv/vscodium-overpassql-syntax",
   "bugs": {
