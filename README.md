@@ -4,9 +4,17 @@
 
 Provides syntax highlighting for [OverpassQL][osm_wiki_overpassql].
 
+## Installing
+
+Download it [from the VS Code marketplace](https://marketplace.visualstudio.com/items?itemName=tqdv.overpassql-syntax).
+
 ## Building
 
 In the `the-extension` folder, execute the command `vsce package`.
+
+## Changelog
+
+See [CHANGELOG.md](the-extension/CHANGELOG.md).
 
 ## Things to do
 
