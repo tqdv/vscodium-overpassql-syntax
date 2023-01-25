@@ -19,5 +19,5 @@ if (triest.count(tirsentr(tiesnt) + ien.val )) {
   out;
 } else {
   oientirt();
-  nwr(if r: rsietn ) 
+  nwr(if: rsietn["stien"] ) ;
 }

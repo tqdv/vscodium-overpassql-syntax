@@ -11,11 +11,10 @@
       ]
     },
     "fallback": {
-      "TODO": "Use this or remove it",
       "comment": "Fallback rule when we don't know what the current context is",
       "name": "meta.overpassql.unknown",
       "begin": "(?=.)",
-      "end": "(;)|\\{|\\}",
+      "end": "(?<=[;\\{|\\}])",
       "patterns": [
         { "include": "#whitespace" },
         { "include": "#comments" },
@@ -49,7 +48,9 @@
         { "include": "#block-construct" },
 
         { "include": "#generic-function-statement-generic-name" },
-        { "include": "#generic-statement" }
+
+        { "include": "#block-group" },
+        { "include": "#fallback" }
       ]
     },
 
@@ -538,6 +539,7 @@
         { "include": "#number-literal" },
 
         { "include": "#evaluator-variable" },
+        { "include": "#evaluator-tag-value" },
         { "include": "#evaluator-field-access" },
         { "include": "#builtin-evaluator-function-name" },
         { "include": "#evaluator-function-name" },
@@ -545,9 +547,52 @@
       ]
     },
     "evaluator-variable": {
-      "comment": "Matches a set variable within an evaluator statement { <term> <before '.'> }",
+      "comment": "Matches a set variable within an evaluator statement { <term> <before '.' > }",
       "name": "variable.other.overpassql",
       "match": "([a-zA-Z][a-zA-Z0-9]*+)(?=\\.)"
+    },
+    "evaluator-tag-value": {
+      "comment": "Matches a tag value accessor within an evaluator statement",
+      "name": "meta.overpassql.evaluator.tag-value",
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.brackets.begin.overpassql"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.brackets.end.overpassql"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#string-literal" },
+        { "include": "#bareword" },
+
+        { "include": "#evaluator" }
+      ]
+    },
+    "evaluator-operator": {
+      "comment": "Matches an operator within an evaluator statement",
+      "match": "(::)|(!|\\|\\||&&|==|!=|<=|>=|<|>)|(\\+|-|\\*|/)|(\\?|:)",
+      "captures": {
+        "1": {
+          "name": "keyword.other.overpassql"
+        },
+        "2": {
+          "name": "keyword.operator.logical.overpassql"
+        },
+        "3": {
+          "name": "keyword.operator.arithmetic.overpassql"
+        },
+        "4": {
+          "name": "keyword.operator.other.overpassql"
+        }
+      }
     },
     "builtin-evaluator-function-name": {
       "comment": "Matches a built-in function name within an evaluator statement { <builtin-function-name> <before '('> }",
@@ -649,7 +694,6 @@
     },
     "setting-param": {
       "patterns": [
-        { "include": "#setting-test" },
         { "include": "#setting-special-fields" },
         { "include": "#parameter-separator" },
         { "include": "#expression" }
@@ -659,10 +703,6 @@
       "comment": "Matches a comma",
       "name": "punctuation.separator.delimiter.comma.overpassql",
       "match": ","
-    },
-    "setting-test": {
-      "name": "meta.overpassql.keyword.colon-colon-id",
-      "match": "::id"
     },
     "setting-special-fields": {
       "comment": "Matches special field names in settings",
