@@ -1,7 +1,7 @@
 {
   "name": "overpassql-syntax",
   "publisher": "tqdv",
-  "version": "1.0.0",
+  "version": "1.1.0",
 
   "engines": {
     "vscodium": "^1.9.0",
@@ -28,7 +28,8 @@
       {
         "id": "overpassql",
         "aliases": ["Overpass QL", "overpassQL", "Overpass Query Language"],
-        "extensions": [".overpassql"]
+        "extensions": [".overpassql"],
+        "configuration": "./overpassql.language-configuration.json"
       }
     ],
     "grammars": [
