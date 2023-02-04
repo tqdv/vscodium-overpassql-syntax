@@ -10,6 +10,8 @@ Download it [from the VS Code marketplace](https://marketplace.visualstudio.com/
 
 ## Building
 
+Acquire the `vsce` tool, see [Publishing Extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) at the VSCode API docs.
+
 In the `the-extension` folder, execute the command `vsce package`.
 
 ## Changelog
@@ -18,7 +20,7 @@ See [CHANGELOG.md](the-extension/CHANGELOG.md).
 
 ## Things to do
 
-Add [language configuration](https://code.visualstudio.com/api/language-extensions/language-configuration-guide).
+Add support for Overpass Turbo placeholders such as `{{bbox}}`.
 
 ## License
 
