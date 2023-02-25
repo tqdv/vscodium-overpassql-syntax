@@ -1025,7 +1025,7 @@
       "match": ":"
     },
     "overpass-turbo-query-definition": {
-      "comment": "Matches the colon in an extended overpass turbo query",
+      "comment": "Matches the equal sign in an extended overpass turbo query",
       "name": "keyword.operator.assignment.overpassql.turbo",
       "match": "="
     }
