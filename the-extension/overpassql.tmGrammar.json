@@ -36,6 +36,8 @@
         { "include": "#whitespace" },
         { "include": "#comments" },
 
+        { "include": "#extended-overpass-turbo-queries" },
+
         { "include": "#settings-statement-bracket-colon" },
         { "include": "#query-statement-query-type" },
         { "include": "#out-statement-keyword" },
@@ -395,6 +397,8 @@
     "expression": {
       "comment": "Matches an expression",
       "patterns": [
+        { "include": "#extended-overpass-turbo-queries" },
+
         { "include": "#pair-expression" },
         { "include": "#number-literal" },
         { "include": "#string-literal" },
@@ -533,6 +537,8 @@
       "patterns": [
         { "include": "#whitespace" },
         { "include": "#comments" },
+
+        { "include": "#extended-overpass-turbo-queries" },
 
         { "include": "#evaluator-operator" },
         { "include": "#string-literal" },
@@ -973,6 +979,55 @@
         { "include": "#expression" },
         { "include": "#parameter-separator" }
       ]
+    },
+
+    "extended-overpass-turbo-queries": {
+      "comment": "Matches extended Overpass Turbo queries { '{{' ==> '}}' }",
+      "name": "meta.overpassql.turbo.query",
+      "begin": "{{",
+      "end": "}}",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.other.overpassql.turbo.begin"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "keyword.other.overpassql.turbo.end"
+        }
+      },
+      "patterns": [
+        { "include": "#whitespace" },
+        { "include": "#comments" },
+
+        { "include": "#number-literal" },
+        { "include": "#string-literal" },
+
+        { "include": "#overpass-turbo-query-name" },
+        { "include": "#overpass-turbo-query-separator" },
+        { "include": "#overpass-turbo-query-definition" },
+        { "include": "#overpass-turbo-custom-query-name" }
+      ]
+    },
+    "overpass-turbo-query-name": {
+      "comment": "Matches the name of a known overpass turbo query",
+      "name": "support.constant.overpassql.turbo",
+      "match": "\\b(bbox|center|date|geocodeId|geocodeArea|geocodeBbox|geocodeCoords|style|data)\\b"
+    },
+    "overpass-turbo-custom-query-name": {
+      "comment": "Matches the name of a user-defined overpass turbo query",
+      "name": "variable.other.overpassql.turbo",
+      "match": "\\b[a-zA-Z][a-zA-Z0-9]*+(?=\\w*[:}=])"
+    },
+    "overpass-turbo-query-separator": {
+      "comment": "Matches the colon in an extended overpass turbo query",
+      "name": "punctuation.separator.delimiter.colon.overpassql.turbo",
+      "match": ":"
+    },
+    "overpass-turbo-query-definition": {
+      "comment": "Matches the colon in an extended overpass turbo query",
+      "name": "keyword.operator.assignment.overpassql.turbo",
+      "match": "="
     }
   }
 }

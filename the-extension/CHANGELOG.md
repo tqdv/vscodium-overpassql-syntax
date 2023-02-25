@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.0] – 2023-02-25
+
+Add support for extended overpass turbo queries such as `{{bbox}}`.
+
 ## [2.0.0] – 2023-02-25
 
 No changes with 1.1.0 other than releasing the code under MPL-2.0 instead of Artistic-2.0.

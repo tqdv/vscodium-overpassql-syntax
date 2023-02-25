@@ -12,7 +12,7 @@ Download it [from the VS Code marketplace](https://marketplace.visualstudio.com/
 
 Acquire the `vsce` tool, see [Publishing Extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) at the VSCode API docs.
 
-In the `the-extension` folder, execute the command `vsce package`.
+In the `the-extension` folder, execute the command `vsce package`. This will package the extension to `overpassql-syntax-$version.vsix` in that folder.
 
 ## Changelog
 
@@ -20,7 +20,7 @@ See [CHANGELOG.md](the-extension/CHANGELOG.md).
 
 ## Things to do
 
-Add support for Overpass Turbo placeholders such as `{{bbox}}`.
+None yet.
 
 ## License
 
