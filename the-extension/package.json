@@ -1,7 +1,7 @@
 {
   "name": "overpassql-syntax",
   "publisher": "tqdv",
-  "version": "1.1.0",
+  "version": "2.0.0",
 
   "engines": {
     "vscodium": "^1.9.0",
@@ -10,7 +10,7 @@
   
   "displayName": "Overpass QL syntax",
   "description": "Overpass QL syntax highlighting for vscodium-compatible editors",
-  "license": "Artistic-2.0",
+  "license": "MPL-2.0",
   "categories": ["Programming Languages"],
   "keywords": ["overpass", "osm", "openstreetmap"],
 

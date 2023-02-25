@@ -24,4 +24,4 @@ Add support for Overpass Turbo placeholders such as `{{bbox}}`.
 
 ## License
 
-Licensed under the [Artistic 2.0](the-extension/LICENSE) license.
+Licensed under the [Mozilla Public License 2.0](the-extension/LICENSE) license.
